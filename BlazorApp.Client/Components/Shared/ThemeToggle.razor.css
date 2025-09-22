@@ -1,0 +1,14 @@
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+    .theme-toggle select {
+        padding: .35rem .5rem;
+        border-radius: 4px;
+        border: 1px solid var(--border, #ddd);
+        background: var(--card-bg, #fff);
+        color: var(--text, #111);
+    }

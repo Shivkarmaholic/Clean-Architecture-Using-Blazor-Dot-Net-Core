@@ -1,0 +1,58 @@
+/* Themed, high-contrast sidebar nav */
+
+.navbar-toggler { background-color: color-mix(in oklab, var(--text) 10%, transparent); }
+
+
+:host {
+    color: var(--text);
+}
+.navbar-brand {
+    color: var(--text);
+}
+/* Sidebar scroll area background (left panel) */
+.nav-scrollable {
+    background: color-mix(in oklab, var(--bg) 96%, var(--border) 4%);
+}
+
+/* Ensure nav link text/icons are readable in light theme and consistent in dark/blue */
+.nav-item { font-size: .95rem; padding-bottom: .5rem; }
+
+/* Force anchor color and icon color to theme text */
+.nav-item ::deep .nav-link {
+    color: var(--text) !important;
+    border-radius: 6px;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    line-height: 2.5rem;
+    gap: .5rem;
+}
+
+/* Icon color follows text */
+.nav-item ::deep .nav-link .oi,
+.nav-item ::deep .nav-link span[aria-hidden="true"] {
+    color: var(--text) !important;
+}
+
+/* Hover/active backgrounds with sufficient contrast on light; still subtle on dark */
+.nav-item ::deep .nav-link:hover {
+    background-color: color-mix(in oklab, var(--accent) 10%, var(--card-bg) 90%);
+    color: var(--text) !important;
+}
+
+.nav-item ::deep .nav-link.active {
+    background-color: color-mix(in oklab, var(--accent) 16%, var(--card-bg) 84%);
+    border: 1px solid var(--border);
+    color: var(--text) !important;
+}
+
+/* Wide screens: sidebar sizing/scrolling */
+@media (min-width:641px){
+    .navbar-toggler{ display:none; }
+    .collapse{ display:block; }
+    .nav-scrollable{
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+        padding: .75rem;
+    }
+}

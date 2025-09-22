@@ -1,0 +1,98 @@
+/* Fallback/base */
+:root {
+    --bg: #ffffff;
+    --text: #111111;
+    --muted: #666666;
+    --card-bg: #ffffff;
+    --border: #dddddd;
+    --accent: #3498db;
+    --accent-contrast: #ffffff;
+    --danger-bg: #f8d7da;
+    --danger-border: #f5c6cb;
+    --danger-text: #721c24;
+    --shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+    /* Light */
+    :root[data-theme='light'] {
+        --bg: #ffffff;
+        --text: #111111;
+        --muted: #666666;
+        --card-bg: #ffffff;
+        --border: #dddddd;
+        --accent: #3498db;
+        --accent-contrast: #ffffff;
+        --danger-bg: #f8d7da;
+        --danger-border: #f5c6cb;
+        --danger-text: #721c24;
+        --shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Dark */
+    :root[data-theme='dark'] {
+        --bg: #0f1115;
+        --text: #e6e6e6;
+        --muted: #aaaaaa;
+        --card-bg: #161a22;
+        --border: #2a2f3a;
+        --accent: #4aa3ff;
+        --accent-contrast: #0b1220;
+        --danger-bg: #3a1f24;
+        --danger-border: #6b2a34;
+        --danger-text: #ffd7dc;
+        --shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    /* Blue (sample extra theme) */
+    :root[data-theme='blue'] {
+        --bg: #f5f8ff;
+        --text: #0a1a33;
+        --muted: #4a5b77;
+        --card-bg: #ffffff;
+        --border: #cfe0ff;
+        --accent: #2563eb;
+        --accent-contrast: #ffffff;
+        --danger-bg: #fde2e2;
+        --danger-border: #f8b4b4;
+        --danger-text: #9b1c1c;
+        --shadow: 0 2px 8px rgba(37,99,235,0.15);
+    }
+
+/* Global baseline so pages immediately reflect variables */
+html, body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+a {
+    color: var(--accent);
+}
+
+input, textarea, select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn {
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.alert-danger {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    color: var(--danger-text);
+}

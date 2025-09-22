@@ -1,0 +1,85 @@
+﻿@page "/customers/edit/{Id:guid}"
+@using BlazorApp.Application.Customers.Commands.UpdateCustomer
+@using BlazorApp.Client
+@inject BlazorApp.Client.Services.CustomerService CustomerService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResource> L
+@rendermode InteractiveServer
+
+<PageTitle>@L["EditCustomer_Title"]</PageTitle>
+
+<div class="customer-form-container">
+    <div class="customer-form-header">
+        <h1>@L["EditCustomer_Header"]</h1>
+        <button class="btn btn-outline-secondary back-button" @onclick="NavigateBack"><span class="icon">←</span> @L["Back"]</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>@L["Error"]:</strong> @errorMessage
+            <button type="button" class="btn-close" @onclick="() => errorMessage = null" aria-label="@L["Close"]">✕</button>
+        </div>
+    }
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>@L["LoadingCustomer"]</p>
+        </div>
+    }
+    else
+    {
+        <div class="form-card">
+            <EditForm Model="@command" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <div class="form-section">
+                    <h3>@L["CustomerInformation"]</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">@L["FirstName"]</label>
+                            <InputText id="firstName" @bind-Value="command.FirstName" class="form-control" />
+                            <ValidationMessage For="@(() => command.FirstName)" class="validation-message" />
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">@L["LastName"]</label>
+                            <InputText id="lastName" @bind-Value="command.LastName" class="form-control" />
+                            <ValidationMessage For="@(() => command.LastName)" class="validation-message" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">@L["EmailAddress"]</label>
+                            <InputText id="email" @bind-Value="command.Email" class="form-control" />
+                            <ValidationMessage For="@(() => command.Email)" class="validation-message" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">@L["PhoneNumber"]</label>
+                            <InputText id="phoneNumber" @bind-Value="command.PhoneNumber" class="form-control" />
+                            <ValidationMessage For="@(() => command.PhoneNumber)" class="validation-message" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="address">@L["Address"]</label>
+                            <InputTextArea id="address" @bind-Value="command.Address" class="form-control" rows="3" />
+                            <ValidationMessage For="@(() => command.Address)" class="validation-message" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline-secondary" @onclick="NavigateBack">@L["Cancel"]</button>
+                    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                        @if (isSubmitting) { <div class="spinner-inline"></div><span>@L["Saving"]</span> } else { <span>@L["SaveChanges"]</span> }
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>

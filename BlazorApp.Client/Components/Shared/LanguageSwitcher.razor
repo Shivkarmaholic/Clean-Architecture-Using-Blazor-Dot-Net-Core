@@ -1,0 +1,32 @@
+﻿@inject NavigationManager Nav
+@rendermode InteractiveServer
+<div class="lang-switcher">
+    <select value="@current" @onchange="OnChange">
+        @foreach (var c in Cultures)
+        {
+            <option value="@c.Value">@c.Key</option>
+        }
+    </select>
+</div>
+
+@code {
+    private string current = System.Globalization.CultureInfo.CurrentUICulture.Name;
+
+    private readonly Dictionary<string, string> Cultures = new()
+    {
+        { "English (US)", "en-US" },
+        { "Français (FR)", "fr-FR" },
+        { "हिन्दी (भारत)", "hi-IN" }
+    };
+
+    private void OnChange(ChangeEventArgs e)
+    {
+        current = e.Value?.ToString() ?? "en-US";
+
+        var currentPath = Nav.ToBaseRelativePath(Nav.Uri);
+        var redirect = string.IsNullOrWhiteSpace(currentPath) ? "/" : "/" + currentPath;
+
+        var url = $"/set-culture?culture={Uri.EscapeDataString(current)}&redirectUri={Uri.EscapeDataString(redirect)}";
+        Nav.NavigateTo(url, forceLoad: true);
+    }
+}

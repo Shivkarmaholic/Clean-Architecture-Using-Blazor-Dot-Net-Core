@@ -1,0 +1,106 @@
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+}
+
+/* Header (row) */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  height: 3.5rem;
+  padding: 0 1rem;
+  background: color-mix(in oklab, var(--bg) 85%, var(--border) 15%);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.sidebar-toggle,
+.user-avatar {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 6px;
+  padding: .35rem .6rem;
+  cursor: pointer;
+}
+
+/* Container (row): sidebar + main */
+.app-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-height: 0; /* allow child scrolling */
+}
+
+/* Fixed sidebar with collapsible variant */
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  background: color-mix(in oklab, var(--bg) 96%, var(--border) 4%);
+  color: var(--text);
+  border-right: 1px solid var(--border);
+  height: calc(100vh - 3.5rem);
+  position: sticky;
+  top: 3.5rem;
+  transition: width .2s ease, min-width .2s ease;
+  padding: .75rem;
+}
+
+.sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+  border-right: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.page-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Main content area */
+.app-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Keep existing content padding on larger screens */
+@media (min-width: 641px) {
+  article {
+    padding-left: 2rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+/* Small screens: header controls distribute, sidebar expands full width when open */
+@media (max-width: 640.98px) {
+  .app-header { justify-content: space-between; }
+ 
+  .sidebar.collapsed {
+    width: 0;
+    min-width: 0;
+  }
+}

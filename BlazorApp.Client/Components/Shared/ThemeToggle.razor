@@ -1,0 +1,55 @@
+﻿@using BlazorApp.Client.Services
+@inject BlazorApp.Client.Services.ThemeState ThemeState
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<div class="theme-toggle">
+    <select value="@current" @onchange="OnChange" aria-label="Theme">
+        @foreach (var t in Themes)
+        {
+            <option value="@t.Value">@t.Key</option>
+        }
+    </select>
+</div>
+
+@code {
+    private string current = string.Empty;
+
+    private readonly Dictionary<string, BlazorApp.Client.Services.Theme> Themes = new()
+    {
+        { "Light", Theme.Light },
+        { "Dark",  Theme.Dark  },
+        { "Blue",  Theme.Blue  } // extend here
+    };
+
+    protected override void OnInitialized()
+    {
+        current = ThemeState.CurrentTheme.ToString();
+        ThemeState.Changed += OnThemeChanged;
+    }
+
+    private void OnThemeChanged()
+    {
+        current = ThemeState.CurrentTheme.ToString();
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => ThemeState.Changed -= OnThemeChanged;
+
+    private void OnChange(ChangeEventArgs e)
+    {
+        current = e.Value?.ToString() ?? nameof(BlazorApp.Client.Services.Theme.Light);
+
+        // Live preview (no reload)
+        if (Enum.TryParse<BlazorApp.Client.Services.Theme>(current, out var theme))
+        {
+            ThemeState.SetTheme(theme);
+        }
+
+        // Persist to cookie via endpoint and redirect back (same as LanguageSwitcher)
+        var path = Nav.ToBaseRelativePath(Nav.Uri);
+        var redirect = string.IsNullOrWhiteSpace(path) ? "/" : "/" + path;
+        var url = $"/set-theme?theme={Uri.EscapeDataString(current)}&redirectUri={Uri.EscapeDataString(redirect)}";
+        Nav.NavigateTo(url, forceLoad: true);
+    }
+}

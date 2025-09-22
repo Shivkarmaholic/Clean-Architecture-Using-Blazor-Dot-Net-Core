@@ -1,0 +1,119 @@
+﻿@page "/"
+@using BlazorApp.Application.Customers.Queries.GetCustomers
+@using BlazorApp.Client
+@using BlazorApp.Client.Services
+@inject CustomerService CustomerService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IStringLocalizer<SharedResource> L
+@rendermode InteractiveServer
+
+<PageTitle>@L["Customers"]</PageTitle>
+
+<div class="customers-container">
+    <div class="customers-header">
+        <h1>@L["CustomerManagement"]</h1>
+        <button class="btn btn-primary" @onclick="NavigateToCreate">
+            <span class="icon">➕</span> @L["AddNewCustomer"]
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            <strong>@L["Error"]:</strong> @errorMessage
+            <button type="button" class="btn-close" @onclick="() => errorMessage = null" aria-label="@L["Close"]">✕</button>
+        </div>
+    }
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" placeholder="@L["SearchCustomersPlaceholder"]"
+                   @bind-value="searchTerm" @bind-value:event="oninput" @onkeyup="FilterCustomers" />
+            @if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                <button class="clear-button" @onclick="ClearSearch">✕</button>
+            }
+        </div>
+        <button class="btn btn-outline-secondary refresh-button" @onclick="LoadCustomers">
+            <span class="icon">🔄</span>
+        </button>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>@L["LoadingCustomers"]</p>
+        </div>
+    }
+    else if (filteredCustomers?.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-icon">👥</div>
+            <p>@(string.IsNullOrWhiteSpace(searchTerm)
+                ? L["NoCustomersFound"]
+                : L["NoCustomersMatch"])</p>
+        </div>
+    }
+    else
+    {
+        <div class="customer-grid">
+            @foreach (var customer in filteredCustomers!)
+            {
+                <div class="customer-card">
+                    <div class="customer-card-header">
+                        <h3>@customer.FirstName @customer.LastName</h3>
+                        <div class="customer-actions">
+                            <button class="icon-button" @onclick="() => ViewCustomerDetails(customer.Id)" title="@L["ViewDetails"]">👁️</button>
+                            <button class="icon-button" @onclick="() => NavigateToEdit(customer.Id)" title="@L["Edit"]">✏️</button>
+                            <button class="icon-button" @onclick="() => DeleteCustomer(customer.Id)" title="@L["Delete"]">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="customer-card-body">
+                        <div class="customer-info">
+                            <div class="info-row"><span class="info-label">@L["Email"]:</span><a href="mailto:@customer.Email" class="info-value email">@customer.Email</a></div>
+                            <div class="info-row"><span class="info-label">@L["Phone"]:</span>
+                                @if (!string.IsNullOrEmpty(customer.PhoneNumber))
+                                {
+                                    <a href="tel:@customer.PhoneNumber" class="info-value">@customer.PhoneNumber</a>
+                                }
+                                else
+                                {
+                                    <span class="info-value not-available">@L["NotProvided"]</span>
+                                }
+                            </div>
+                            <div class="info-row"><span class="info-label">@L["Created"]:</span><span class="info-value">@customer.CreatedDate.ToString("MMM d, yyyy")</span></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (selectedCustomer != null)
+{
+    <div class="modal-backdrop" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <h2>@L["CustomerDetails"]</h2>
+                <button class="modal-close" @onclick="CloseModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="customer-details">
+                    <div class="detail-row"><span class="detail-label">@L["Name"]:</span><span class="detail-value">@selectedCustomer.FirstName @selectedCustomer.LastName</span></div>
+                    <div class="detail-row"><span class="detail-label">@L["Email"]:</span><a href="mailto:@selectedCustomer.Email" class="detail-value">@selectedCustomer.Email</a></div>
+                    <div class="detail-row"><span class="detail-label">@L["Phone"]:</span><span class="detail-value">@(string.IsNullOrEmpty(selectedCustomer.PhoneNumber) ? L["NotProvided"] : selectedCustomer.PhoneNumber)</span></div>
+                    <div class="detail-row"><span class="detail-label">@L["Address"]:</span><span class="detail-value">@(string.IsNullOrEmpty(selectedCustomer.Address) ? L["NotProvided"] : selectedCustomer.Address)</span></div>
+                    <div class="detail-row"><span class="detail-label">@L["Created"]:</span><span class="detail-value">@selectedCustomer.CreatedDate.ToString("MMM d, yyyy HH:mm")</span></div>
+                    <div class="detail-row"><span class="detail-label">@L["LastUpdated"]:</span><span class="detail-value">@(selectedCustomer.UpdatedDate?.ToString("MMM d, yyyy HH:mm") ?? L["Never"])</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="CloseModal">@L["Close"]</button>
+                <button class="btn btn-primary" @onclick="() => NavigateToEdit(selectedCustomer.Id)">@L["Edit"]</button>
+            </div>
+        </div>
+    </div>
+}
